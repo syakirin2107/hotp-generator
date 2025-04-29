@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HOTP Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsotp@latest/dist/jsOTP.min.js"></script>
+    <style>
+        body { font-family: Arial; max-width: 500px; margin: 0 auto; padding: 20px; }
+        input, button { padding: 10px; width: 100%; margin: 10px 0; }
+        button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>HOTP Generator</h1>
+    <input type="text" id="secret" placeholder="e.g., IY2TORJVGQ4EMNZWGY4Q" required>
+    <input type="number" id="counter" value="5">
+    <button onclick="generate()">Generate PIN</button>
+    <div id="result"></div>
+
+    <script>
+        function generate() {
+            const secret = document.getElementById("secret").value.trim().replace(/=/g, '');
+            const counter = parseInt(document.getElementById("counter").value);
+            
+            if (!secret) return alert("Kunci diperlukan!");
+            
+            try {
+                const hotp = new jsOTP.hotp();
+                const pin = hotp.getOtp(secret, counter);
+                document.getElementById("result").innerHTML = `
+                    <strong>PIN: ${pin}</strong><br>
+                    <small>Kunci: ${secret} | Counter: ${counter}</small>
+                `;
+            } catch (e) {
+                document.getElementById("result").innerHTML = `Error: ${e.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
